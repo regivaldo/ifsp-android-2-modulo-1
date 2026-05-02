@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import br.edu.ifsp.preferencias.ui.theme.PreferenciasUsuarioTheme
@@ -63,6 +64,7 @@ fun TelaPreferencias(
     onTemaChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     var nome by remember { mutableStateOf("") }
     var notificacoesAtivadas by remember { mutableStateOf(true) }
     var nivelExperiencia by remember { mutableFloatStateOf(5f) }
