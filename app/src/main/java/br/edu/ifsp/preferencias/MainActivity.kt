@@ -2,6 +2,7 @@ package br.edu.ifsp.preferencias
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import br.edu.ifsp.preferencias.ui.theme.PreferenciasUsuarioTheme
@@ -37,9 +39,16 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            PreferenciasUsuarioTheme {
+            var temaSelecionado by remember { mutableStateOf("Claro") }
+            val darkTheme = temaSelecionado == "Escuro"
+
+            PreferenciasUsuarioTheme(darkTheme = darkTheme) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    TelaPreferencias(modifier = Modifier.padding(innerPadding))
+                    TelaPreferencias(
+                        temaSelecionado = temaSelecionado,
+                        onTemaChange = { temaSelecionado = it },
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }
@@ -47,12 +56,16 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TelaPreferencias(modifier: Modifier = Modifier) {
+fun TelaPreferencias(
+    temaSelecionado: String,
+    onTemaChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     var nome by remember { mutableStateOf("") }
-    var temaSelecionado by remember { mutableStateOf("Claro") }
     var notificacoesAtivadas by remember { mutableStateOf(true) }
     var nivelExperiencia by remember { mutableFloatStateOf(5f) }
 
+    val context = LocalContext.current
     val opcoesTema = listOf("Claro", "Escuro")
 
     Column(
@@ -93,7 +106,7 @@ fun TelaPreferencias(modifier: Modifier = Modifier) {
                         .fillMaxWidth()
                         .selectable(
                             selected = (temaSelecionado == tema),
-                            onClick = { temaSelecionado = tema },
+                            onClick = { onTemaChange(tema) },
                             role = Role.RadioButton
                         )
                         .padding(vertical = 4.dp),
@@ -157,6 +170,8 @@ fun TelaPreferencias(modifier: Modifier = Modifier) {
                 Log.d("Preferencias", "Tema: $temaSelecionado")
                 Log.d("Preferencias", "Notificações: ${if (notificacoesAtivadas) "Ativadas" else "Desativadas"}")
                 Log.d("Preferencias", "Nível de experiência: ${nivelExperiencia.toInt()}")
+
+                Toast.makeText(context, "Preferências salvas com sucesso!", Toast.LENGTH_SHORT).show()
             },
             modifier = Modifier.fillMaxWidth()
         ) {
