@@ -4,19 +4,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme = lightColorScheme(
     primary = VerdePrimario,
     secondary = RoxoSecundario,
-    onPrimary = androidx.compose.ui.graphics.Color.White,
-    onSecondary = androidx.compose.ui.graphics.Color.White
+    onPrimary = Color.White,
+    onSecondary = Color.White
 )
 
 private val DarkColorScheme = darkColorScheme(
     primary = VerdePrimarioEscuro,
     secondary = RoxoSecundarioEscuro,
-    onPrimary = androidx.compose.ui.graphics.Color.White,
-    onSecondary = androidx.compose.ui.graphics.Color.White
+    onPrimary = Color.White,
+    onSecondary = Color.White
 )
 
 @Composable
