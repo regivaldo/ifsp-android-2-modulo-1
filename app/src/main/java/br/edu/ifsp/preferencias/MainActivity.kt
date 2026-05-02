@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,8 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -36,10 +39,17 @@ import br.edu.ifsp.preferencias.ui.theme.PreferenciasUsuarioTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
-            PreferenciasUsuarioTheme {
+            var temaSelecionado by remember { mutableStateOf("Claro") }
+
+            PreferenciasUsuarioTheme(darkTheme = temaSelecionado == "Escuro") {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    TelaPreferencias(modifier = Modifier.padding(innerPadding))
+                    TelaPreferencias(
+                        temaSelecionado = temaSelecionado,
+                        onTemaChange = { temaSelecionado = it },
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }
@@ -47,9 +57,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun TelaPreferencias(modifier: Modifier = Modifier) {
+fun TelaPreferencias(
+    temaSelecionado: String,
+    onTemaChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     var nome by remember { mutableStateOf("") }
-    var temaSelecionado by remember { mutableStateOf("Claro") }
     var notificacoesAtivadas by remember { mutableStateOf(true) }
     var nivelExperiencia by remember { mutableFloatStateOf(5f) }
 
@@ -58,6 +71,7 @@ fun TelaPreferencias(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(24.dp)
     ) {
         Text(
@@ -93,7 +107,7 @@ fun TelaPreferencias(modifier: Modifier = Modifier) {
                         .fillMaxWidth()
                         .selectable(
                             selected = (temaSelecionado == tema),
-                            onClick = { temaSelecionado = tema },
+                            onClick = { onTemaChange(tema) },
                             role = Role.RadioButton
                         )
                         .padding(vertical = 4.dp),
